@@ -10,6 +10,7 @@ import {
 	type ClientOptions,
 	type ServerConfig,
 	type PlayerInfo,
+	type PlayerData,
 	type ServerDetails,
 	RCONError,
 	RCONErrorCode,
@@ -20,6 +21,7 @@ import {
 	createCommandPacket,
 	Protocol,
 	parsePlayersResponse,
+	parsePlayerDataResponse,
 	parseServerDetailsResponse,
 } from './protocol.js';
 import { getCommandDefinition, isValidCommand } from './commands.js';
@@ -260,11 +262,26 @@ export class EvrimaRCON {
 	}
 
 	/**
+	 * Get list of available playable dinosaurs/characters.
+	 */
+	async getPlayables(): Promise<CommandResult> {
+		return this.sendCommand('getplayables');
+	}
+
+	/**
 	 * Update playable characters configuration.
 	 * @param config - Configuration string (e.g., "dino1:enabled,dino2:disabled")
 	 */
 	async updatePlayables(config: string): Promise<CommandResult> {
 		return this.sendCommand('updateplayables', config);
+	}
+
+	/**
+	 * Toggle dinosaur migrations on/off.
+	 * @param enabled - True to enable, false to disable
+	 */
+	async setMigrations(enabled: boolean): Promise<CommandResult> {
+		return this.sendCommand('migrations:toggle', enabled ? '1' : '0');
 	}
 
 	/**
@@ -275,12 +292,23 @@ export class EvrimaRCON {
 		return this.sendCommand('save', name);
 	}
 
+	/**
+	 * Pause or unpause the server.
+	 * @param paused - True to pause, false to unpause
+	 */
+	async setPaused(paused: boolean): Promise<CommandResult> {
+		return this.sendCommand('pause', paused ? '1' : '0');
+	}
+
 	// ========================================================================
 	// Player Management Commands
 	// ========================================================================
 
 	/**
 	 * Get list of all online players.
+	 *
+	 * Returns SteamId, Name, and EOSId (Epic Online Services ID) for each player.
+	 *
 	 * @returns Array of parsed player information
 	 */
 	async getPlayers(): Promise<PlayerInfo[]> {
@@ -289,11 +317,26 @@ export class EvrimaRCON {
 	}
 
 	/**
-	 * Get detailed player data.
+	 * Get detailed player data including mutations and prime status.
+	 *
+	 * Response is wrapped with "PlayerData\n" prefix and "PlayerDataEnd\n" terminator.
+	 *
 	 * @param steamId - Optional Steam ID to filter by
+	 * @returns Parsed player data with mutations, prime status, etc.
 	 */
-	async getPlayerData(steamId?: string): Promise<CommandResult> {
-		return this.sendCommand('playData', steamId);
+	async getPlayerData(steamId?: string): Promise<PlayerData> {
+		const result = await this.sendCommand('playData', steamId);
+		const parsed = parsePlayerDataResponse(result.raw);
+		return {
+			raw: result.raw,
+			...(parsed.steamId && { steamId: parsed.steamId }),
+			...(parsed.name && { name: parsed.name }),
+			...(parsed.eosId && { eosId: parsed.eosId }),
+			...(parsed.character && { character: parsed.character }),
+			...(parsed.isAlive !== undefined && { isAlive: parsed.isAlive }),
+			...(parsed.mutations && { mutations: parsed.mutations }),
+			...(parsed.isPrime !== undefined && { isPrime: parsed.isPrime }),
+		};
 	}
 
 	/**
@@ -318,6 +361,40 @@ export class EvrimaRCON {
 		}
 		const paramString = params.reason ? `${params.steamId},${params.reason}` : params.steamId;
 		return this.sendCommand('kick', paramString);
+	}
+
+	// ========================================================================
+	// Growth & Network Settings
+	// ========================================================================
+
+	/**
+	 * Toggle growth multiplier feature on/off.
+	 * @param enabled - True to enable, false to disable
+	 */
+	async setGrowthMultiplier(enabled: boolean): Promise<CommandResult> {
+		return this.sendCommand('growth:multiplier:toggle', enabled ? '1' : '0');
+	}
+
+	/**
+	 * Set the growth multiplier value.
+	 * @param multiplier - Growth multiplier value (e.g., 1.5 for 150% growth speed)
+	 */
+	async setGrowthMultiplierValue(multiplier: number): Promise<CommandResult> {
+		if (multiplier < 0) {
+			throw new RCONError(
+				RCONErrorCode.INVALID_COMMAND,
+				`Growth multiplier must be positive, got: ${multiplier}`
+			);
+		}
+		return this.sendCommand('growth:multiplier:set', multiplier.toString());
+	}
+
+	/**
+	 * Toggle network update distance checks.
+	 * @param enabled - True to enable, false to disable
+	 */
+	async setNetUpdateDistanceChecks(enabled: boolean): Promise<CommandResult> {
+		return this.sendCommand('netupdate:toggle', enabled ? '1' : '0');
 	}
 
 	// ========================================================================
@@ -406,6 +483,21 @@ export class EvrimaRCON {
 			);
 		}
 		return this.sendCommand('ai:density', density.toString());
+	}
+
+	/**
+	 * Get the current server queue status.
+	 */
+	async getQueueStatus(): Promise<CommandResult> {
+		return this.sendCommand('queue:status');
+	}
+
+	/**
+	 * Toggle AI learning behavior on/off.
+	 * @param enabled - True to enable, false to disable
+	 */
+	async setAILearning(enabled: boolean): Promise<CommandResult> {
+		return this.sendCommand('ai:learning:toggle', enabled ? '1' : '0');
 	}
 
 	// ========================================================================

@@ -5,29 +5,53 @@
 
 /**
  * All available RCON commands supported by The Isle: Evrima servers.
+ *
+ * Commands are organized by category:
+ * - Core: auth, command (internal protocol)
+ * - Server: announce, dm, srv:details, etc.
+ * - Player: ban, kick, players, playData
+ * - World: save, pause
+ * - Whitelist: whitelist:*
+ * - Features: globalchat, humans, migrations, growth
+ * - AI: ai:*
  */
 export type Command =
+	// Core protocol commands
 	| 'auth'
 	| 'command'
+	// Server management (0x10-0x1F)
 	| 'announce'
 	| 'dm'
 	| 'srv:details'
 	| 'entities:wipe:corpses'
+	| 'getplayables'
 	| 'updateplayables'
+	| 'migrations:toggle'
+	// Player management (0x20-0x4F)
 	| 'ban'
+	| 'growth:multiplier:toggle'
+	| 'growth:multiplier:set'
+	| 'netupdate:toggle'
 	| 'kick'
 	| 'players'
+	// World management (0x50-0x7F)
 	| 'save'
+	| 'pause'
 	| 'custom'
 	| 'playData'
+	// Whitelist (0x81-0x83)
 	| 'whitelist:toggle'
 	| 'whitelist:add'
 	| 'whitelist:remove'
+	// Game features (0x84-0x8F)
 	| 'globalchat:toggle'
 	| 'humans:toggle'
+	// AI controls (0x90+)
 	| 'ai:toggle'
 	| 'ai:classes:disable'
-	| 'ai:density';
+	| 'ai:density'
+	| 'queue:status'
+	| 'ai:learning:toggle';
 
 /**
  * Server connection configuration.
@@ -134,16 +158,43 @@ export interface ClientEvents {
 
 /**
  * Player information returned by the players command.
+ *
+ * The server returns data in order: SteamId, Name, EOSId
  */
 export interface PlayerInfo {
-	/** Steam ID of the player */
+	/** Steam ID of the player (17-digit number) */
 	readonly steamId: string;
-	/** In-game name of the player */
+	/** In-game display name of the player */
 	readonly name: string;
+	/** Epic Online Services ID of the player */
+	readonly eosId?: string;
+	/** Raw line from server response */
+	readonly raw?: string;
+}
+
+/**
+ * Detailed player data returned by the playData command.
+ *
+ * Response is wrapped with "PlayerData\n" prefix and "PlayerDataEnd\n" terminator.
+ * Fields may vary depending on server version and player state.
+ */
+export interface PlayerData {
+	/** Steam ID of the player */
+	readonly steamId?: string;
+	/** In-game display name */
+	readonly name?: string;
+	/** Epic Online Services ID */
+	readonly eosId?: string;
 	/** Current dinosaur/character being played */
 	readonly character?: string;
 	/** Whether the player is alive */
 	readonly isAlive?: boolean;
+	/** Player's mutation data (new in recent patches) */
+	readonly mutations?: string[];
+	/** Whether player has prime/premium status */
+	readonly isPrime?: boolean;
+	/** Raw response data */
+	readonly raw: string;
 }
 
 /**

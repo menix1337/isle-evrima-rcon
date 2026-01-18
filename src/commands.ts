@@ -15,9 +15,14 @@ export const ProtocolCodes = {
 
 /**
  * Registry of all available RCON commands with their byte codes and metadata.
+ *
+ * Command codes based on latest Evrima RCON protocol.
+ * Some commands may require specific game server versions.
  */
 export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map([
-	// Core protocol commands
+	// ============================================================================
+	// Core Protocol Commands (0x01-0x02)
+	// ============================================================================
 	[
 		'auth',
 		{
@@ -37,12 +42,14 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 		},
 	],
 
-	// Server management commands
+	// ============================================================================
+	// Server Management Commands (0x10-0x1F)
+	// ============================================================================
 	[
 		'announce',
 		{
 			code: 0x10,
-			description: 'Send a server-wide announcement',
+			description: 'Send a server-wide announcement to all players',
 			requiresParams: true,
 			example: 'Server will restart in 5 minutes',
 		},
@@ -68,7 +75,15 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 		'entities:wipe:corpses',
 		{
 			code: 0x13,
-			description: 'Remove all dead bodies from the map',
+			description: 'Remove all dead bodies/corpses from the map',
+			requiresParams: false,
+		},
+	],
+	[
+		'getplayables',
+		{
+			code: 0x14,
+			description: 'Get list of available playable dinosaurs/characters',
 			requiresParams: false,
 		},
 	],
@@ -81,8 +96,19 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 			example: 'dino1:enabled,dino2:disabled',
 		},
 	],
+	[
+		'migrations:toggle',
+		{
+			code: 0x19,
+			description: 'Toggle dinosaur migrations on/off',
+			requiresParams: true,
+			example: '1 or 0',
+		},
+	],
 
-	// Player management commands
+	// ============================================================================
+	// Player Management Commands (0x20-0x4F)
+	// ============================================================================
 	[
 		'ban',
 		{
@@ -90,6 +116,33 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 			description: 'Ban a player from the server',
 			requiresParams: true,
 			example: 'steamId,reason',
+		},
+	],
+	[
+		'growth:multiplier:toggle',
+		{
+			code: 0x21,
+			description: 'Toggle growth multiplier feature on/off',
+			requiresParams: true,
+			example: '1 or 0',
+		},
+	],
+	[
+		'growth:multiplier:set',
+		{
+			code: 0x22,
+			description: 'Set the growth multiplier value',
+			requiresParams: true,
+			example: '1.5',
+		},
+	],
+	[
+		'netupdate:toggle',
+		{
+			code: 0x23,
+			description: 'Toggle network update distance checks',
+			requiresParams: true,
+			example: '1 or 0',
 		},
 	],
 	[
@@ -105,12 +158,14 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 		'players',
 		{
 			code: 0x40,
-			description: 'List all players currently on the server',
+			description: 'List all players on server (returns SteamId, Name, EOSId)',
 			requiresParams: false,
 		},
 	],
 
-	// World management commands
+	// ============================================================================
+	// World Management Commands (0x50-0x7F)
+	// ============================================================================
 	[
 		'save',
 		{
@@ -121,10 +176,19 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 		},
 	],
 	[
+		'pause',
+		{
+			code: 0x60,
+			description: 'Pause or unpause the server',
+			requiresParams: true,
+			example: '1 or 0',
+		},
+	],
+	[
 		'custom',
 		{
 			code: 0x70,
-			description: 'Execute a custom command',
+			description: 'Execute a custom command (may not be functional)',
 			requiresParams: true,
 		},
 	],
@@ -132,12 +196,15 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 		'playData',
 		{
 			code: 0x77,
-			description: 'Retrieve detailed player data',
+			description:
+				'Get detailed player data (mutations, prime status). Response has PlayerData/PlayerDataEnd markers.',
 			requiresParams: false,
 		},
 	],
 
-	// Whitelist commands
+	// ============================================================================
+	// Whitelist Commands (0x81-0x83)
+	// ============================================================================
 	[
 		'whitelist:toggle',
 		{
@@ -151,7 +218,7 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 		'whitelist:add',
 		{
 			code: 0x82,
-			description: 'Add a player to the whitelist',
+			description: 'Add a player to the whitelist by Steam ID',
 			requiresParams: true,
 			example: 'steamId',
 		},
@@ -160,18 +227,20 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 		'whitelist:remove',
 		{
 			code: 0x83,
-			description: 'Remove a player from the whitelist',
+			description: 'Remove a player from the whitelist by Steam ID',
 			requiresParams: true,
 			example: 'steamId',
 		},
 	],
 
-	// Game feature toggles
+	// ============================================================================
+	// Game Feature Toggles (0x84-0x8F)
+	// ============================================================================
 	[
 		'globalchat:toggle',
 		{
 			code: 0x84,
-			description: 'Enable or disable global chat',
+			description: 'Enable or disable global chat for all players',
 			requiresParams: true,
 			example: '1 or 0',
 		},
@@ -186,12 +255,14 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 		},
 	],
 
-	// AI controls
+	// ============================================================================
+	// AI Controls (0x90+)
+	// ============================================================================
 	[
 		'ai:toggle',
 		{
 			code: 0x90,
-			description: 'Enable or disable AI on the server',
+			description: 'Enable or disable AI spawning on the server',
 			requiresParams: true,
 			example: '1 or 0',
 		},
@@ -200,7 +271,7 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 		'ai:classes:disable',
 		{
 			code: 0x91,
-			description: 'Disable specific AI classes',
+			description: 'Disable specific AI dinosaur classes',
 			requiresParams: true,
 			example: 'raptor,trex,stego',
 		},
@@ -209,9 +280,26 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 		'ai:density',
 		{
 			code: 0x92,
-			description: 'Set the AI density in the game world',
+			description: 'Set the AI spawn density (0.0 to 1.0)',
 			requiresParams: true,
 			example: '0.5',
+		},
+	],
+	[
+		'queue:status',
+		{
+			code: 0x93,
+			description: 'Get the current server queue status',
+			requiresParams: false,
+		},
+	],
+	[
+		'ai:learning:toggle',
+		{
+			code: 0x94,
+			description: 'Toggle AI learning behavior on/off',
+			requiresParams: true,
+			example: '1 or 0',
 		},
 	],
 ]);

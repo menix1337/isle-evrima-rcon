@@ -193,36 +193,139 @@ export class ProtocolSocket {
 }
 
 /**
+ * Player entry from the players command.
+ * Server returns: SteamId, Name, EOSId (in that order)
+ */
+export interface ParsedPlayer {
+	steamId: string;
+	name: string;
+	eosId?: string;
+	raw: string;
+}
+
+/**
  * Parse player list response into structured data.
+ *
+ * The server returns data in order: SteamId, Name, EOSId
+ * EOS ID support was added in recent patches.
+ *
  * @param response - Raw response string from players command
  * @returns Array of parsed player entries
  */
-export function parsePlayersResponse(response: string): Array<{ steamId: string; name: string; raw: string }> {
-	const players: Array<{ steamId: string; name: string; raw: string }> = [];
+export function parsePlayersResponse(response: string): ParsedPlayer[] {
+	const players: ParsedPlayer[] = [];
 
 	// Split by newlines and filter empty lines
 	const lines = response.split('\n').filter((line) => line.trim());
 
 	for (const line of lines) {
-		// Try to extract Steam ID (typically 17 digit number)
+		// Try to extract Steam ID (17 digit number)
 		const steamIdMatch = line.match(/(\d{17})/);
 		if (steamIdMatch?.[1]) {
-			// Extract name - typically after the Steam ID, separated by comma or space
-			const afterId = line.substring(line.indexOf(steamIdMatch[1]) + 17);
-			// Remove leading separators (comma, space) and get the name
-			const cleaned = afterId.replace(/^[,\s]+/, '');
-			const namePart = cleaned.split(/[,\s]/)[0];
-			const name = namePart?.trim() || 'Unknown';
+			const steamId = steamIdMatch[1];
+			const afterSteamId = line.substring(line.indexOf(steamId) + 17);
+
+			// Parse remaining parts (Name, EOSId)
+			// Remove leading separators and split by comma
+			const parts = afterSteamId.replace(/^[,\s]+/, '').split(',');
+
+			const name = parts[0]?.trim() || 'Unknown';
+			// EOS ID is typically a 32-character hex string
+			const eosIdCandidate = parts[1]?.trim();
+			const eosId = eosIdCandidate && /^[a-f0-9]{32}$/i.test(eosIdCandidate) ? eosIdCandidate : undefined;
 
 			players.push({
-				steamId: steamIdMatch[1],
+				steamId,
 				name,
+				...(eosId && { eosId }),
 				raw: line,
 			});
 		}
 	}
 
 	return players;
+}
+
+/**
+ * Parsed player data from playData command.
+ */
+export interface ParsedPlayerData {
+	steamId?: string;
+	name?: string;
+	eosId?: string;
+	character?: string;
+	isAlive?: boolean;
+	mutations?: string[];
+	isPrime?: boolean;
+	raw: string;
+}
+
+/**
+ * Parse detailed player data response.
+ *
+ * Response is wrapped with "PlayerData\n" prefix and "PlayerDataEnd\n" terminator.
+ * Includes mutations, prime status, and other detailed info.
+ *
+ * @param response - Raw response string from playData command
+ * @returns Parsed player data object
+ */
+export function parsePlayerDataResponse(response: string): ParsedPlayerData {
+	const result: ParsedPlayerData = { raw: response };
+
+	// Remove PlayerData/PlayerDataEnd markers if present
+	let content = response;
+	if (content.startsWith('PlayerData\n')) {
+		content = content.substring('PlayerData\n'.length);
+	}
+	if (content.endsWith('PlayerDataEnd\n')) {
+		content = content.substring(0, content.length - 'PlayerDataEnd\n'.length);
+	} else if (content.endsWith('PlayerDataEnd')) {
+		content = content.substring(0, content.length - 'PlayerDataEnd'.length);
+	}
+
+	// Parse key:value pairs
+	const lines = content.split('\n').filter((line) => line.trim());
+
+	for (const line of lines) {
+		const colonIndex = line.indexOf(':');
+		if (colonIndex === -1) continue;
+
+		const key = line.substring(0, colonIndex).trim().toLowerCase();
+		const value = line.substring(colonIndex + 1).trim();
+
+		switch (key) {
+			case 'steamid':
+				result.steamId = value;
+				break;
+			case 'name':
+				result.name = value;
+				break;
+			case 'eosid':
+				result.eosId = value;
+				break;
+			case 'character':
+			case 'dino':
+			case 'dinosaur':
+				result.character = value;
+				break;
+			case 'alive':
+			case 'isalive':
+				result.isAlive = value === '1' || value.toLowerCase() === 'true';
+				break;
+			case 'mutations':
+				result.mutations = value
+					.split(',')
+					.map((m) => m.trim())
+					.filter(Boolean);
+				break;
+			case 'prime':
+			case 'isprime':
+				result.isPrime = value === '1' || value.toLowerCase() === 'true';
+				break;
+		}
+	}
+
+	return result;
 }
 
 /**

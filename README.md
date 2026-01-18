@@ -151,18 +151,29 @@ When `autoReconnect` is enabled:
 | `announce(message)` | Broadcast message to all players |
 | `directMessage({ steamId, message })` | Send private message to a player |
 | `getServerDetails()` | Get server info (returns `ServerDetails`) |
-| `wipeCorpses()` | Clear all corpses from the map |
+| `getPlayables()` | Get list of available playable dinosaurs |
 | `updatePlayables(config)` | Update playable dinosaur configuration |
+| `wipeCorpses()` | Clear all corpses from the map |
 | `save(name?)` | Save the world state |
+| `setPaused(paused)` | Pause/unpause the server |
+| `setMigrations(enabled)` | Toggle dinosaur migrations |
 
 ### Player Management
 
 | Method | Description |
 |--------|-------------|
-| `getPlayers()` | Get online players (returns `PlayerInfo[]`) |
-| `getPlayerData(steamId?)` | Get detailed player data |
+| `getPlayers()` | Get online players with SteamId, Name, EOSId |
+| `getPlayerData(steamId?)` | Get detailed player data (mutations, prime status) |
 | `ban({ steamId, reason? })` | Ban a player |
 | `kick({ steamId, reason? })` | Kick a player |
+
+### Growth & Network
+
+| Method | Description |
+|--------|-------------|
+| `setGrowthMultiplier(enabled)` | Toggle growth multiplier feature |
+| `setGrowthMultiplierValue(multiplier)` | Set growth multiplier value (e.g., 1.5) |
+| `setNetUpdateDistanceChecks(enabled)` | Toggle network update distance checks |
 
 ### Whitelist
 
@@ -186,6 +197,8 @@ When `autoReconnect` is enabled:
 | `setAI(enabled)` | Toggle AI spawning |
 | `disableAIClasses(classes)` | Disable specific AI types |
 | `setAIDensity(0.0-1.0)` | Set AI spawn density |
+| `setAILearning(enabled)` | Toggle AI learning behavior |
+| `getQueueStatus()` | Get server queue status |
 
 ### Low-Level Commands
 
@@ -193,7 +206,7 @@ When `autoReconnect` is enabled:
 |--------|-------------|
 | `sendCommand(command, params?)` | Execute any RCON command |
 | `batch(commands)` | Execute multiple commands in sequence |
-| `custom(commandString)` | Send a custom command string |
+| `custom(commandString)` | Send custom command (may not be functional) |
 
 ### Batch Execution
 
@@ -273,6 +286,7 @@ import type {
   Command,
   CommandResult,
   PlayerInfo,
+  PlayerData,
   ServerDetails,
   ServerConfig,
   ClientOptions,
@@ -285,6 +299,11 @@ import type {
 
 // All convenience methods are fully typed
 const players: PlayerInfo[] = await client.getPlayers();
+// Players now include EOS ID: { steamId, name, eosId }
+
+const playerData: PlayerData = await client.getPlayerData();
+// Includes mutations, prime status, character info
+
 const details: ServerDetails = await client.getServerDetails();
 ```
 

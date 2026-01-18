@@ -43,6 +43,7 @@ export type {
 	ConnectionState,
 	ClientEvents,
 	PlayerInfo,
+	PlayerData,
 	ServerDetails,
 	CommandDefinition,
 	RCONErrorCode,
@@ -70,8 +71,11 @@ export {
 	createAuthPacket,
 	createCommandPacket,
 	parsePlayersResponse,
+	parsePlayerDataResponse,
 	parseServerDetailsResponse,
 } from './protocol.js';
+
+export type { ParsedPlayer, ParsedPlayerData } from './protocol.js';
 
 // Validation exports
 export {
