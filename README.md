@@ -168,7 +168,7 @@ When `autoReconnect` is enabled:
 | `getPlayables()` | Get list of available playable dinosaurs |
 | `updatePlayables(config)` | Update playable dinosaur configuration |
 | `wipeCorpses()` | Clear all corpses from the map |
-| `save(name?)` | Save the world state |
+| `save` | Save the world state |
 | `setPaused(paused)` | Pause/unpause the server |
 | `setMigrations(enabled)` | Toggle dinosaur migrations |
 
@@ -211,7 +211,7 @@ When `autoReconnect` is enabled:
 | `setAI(enabled)` | Toggle AI spawning |
 | `disableAIClasses(classes)` | Disable specific AI dinosaur types |
 | `setAIDensity(0.0-1.0)` | Set AI spawn density |
-| `setAILearning(enabled)` | Toggle AI learning behavior |
+| `setAILearning(enabled)` | Toggle AI learning (official servers only?) |
 | `getQueueStatus()` | Get server queue status |
 
 ### Game Constants

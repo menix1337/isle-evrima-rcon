@@ -287,10 +287,9 @@ export class EvrimaRCON {
 
 	/**
 	 * Trigger a server save.
-	 * @param name - Optional save name
 	 */
-	async save(name?: string): Promise<CommandResult> {
-		return this.sendCommand('save', name);
+	async save(): Promise<CommandResult> {
+		return this.sendCommand('save');
 	}
 
 	/**
@@ -507,6 +506,9 @@ export class EvrimaRCON {
 
 	/**
 	 * Toggle AI learning behavior on/off.
+	 *
+	 * **Warning:** This command may only work on official servers.
+	 *
 	 * @param enabled - True to enable, false to disable
 	 */
 	async setAILearning(enabled: boolean): Promise<CommandResult> {

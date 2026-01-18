@@ -172,7 +172,6 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 			code: 0x50,
 			description: 'Trigger a server save operation',
 			requiresParams: false,
-			example: 'backup_name',
 		},
 	],
 	[
@@ -297,7 +296,7 @@ export const CommandRegistry: ReadonlyMap<Command, CommandDefinition> = new Map(
 		'ai:learning:toggle',
 		{
 			code: 0x94,
-			description: 'Toggle AI learning behavior on/off',
+			description: 'Toggle AI learning behavior on/off (may only work on official servers)',
 			requiresParams: true,
 			example: '1 or 0',
 		},
