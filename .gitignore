@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+*.tsbuildinfo
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Cache
+.cache/
+*.cache
+
+# Lock files (keep bun.lock, ignore others if present)
+package-lock.json
+yarn.lock

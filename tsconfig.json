@@ -1,0 +1,49 @@
+{
+	"compilerOptions": {
+		// Language and environment
+		"target": "ESNext",
+		"lib": ["ESNext"],
+		"module": "ESNext",
+		"moduleDetection": "force",
+
+		// Module resolution
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"verbatimModuleSyntax": true,
+		"noEmit": true,
+		"resolveJsonModule": true,
+
+		// Type checking
+		"strict": true,
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"strictPropertyInitialization": true,
+		"noImplicitThis": true,
+		"useUnknownInCatchVariables": true,
+		"alwaysStrict": true,
+
+		// Code quality
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitReturns": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"exactOptionalPropertyTypes": true,
+
+		// Output
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+
+		// Paths
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"],
+			"@tests/*": ["./tests/*"]
+		}
+	},
+	"include": ["src/**/*.ts", "tests/**/*.ts"],
+	"exclude": ["node_modules", "dist"]
+}
