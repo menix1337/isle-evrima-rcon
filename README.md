@@ -10,6 +10,18 @@ Built for production use with automatic reconnection, exponential backoff, and m
 
 > **Note:** This library only supports The Isle: Evrima. Legacy does not have RCON support.
 
+## ⚠️ Disclaimer
+
+**Official documentation for Evrima's RCON protocol is extremely limited.** This library has been built through community efforts, reverse-engineering, and trial-and-error testing.
+
+As a result:
+- Some commands may not work as expected or may change with game updates
+- Response formats may vary between server versions
+- Undocumented behavior may occur
+- New commands may be added or existing ones modified without notice
+
+If you encounter issues, please [open an issue](https://github.com/menix1337/isle-evrima-rcon/issues) with details about your server version and the unexpected behavior. Community contributions and discoveries are always welcome!
+
 ## Features
 
 - 🚀 **High Performance** — Persistent connections, reusable for thousands of commands
@@ -143,6 +155,8 @@ When `autoReconnect` is enabled:
 4. **Max Attempts** — After `maxReconnectAttempts` failures, errors are thrown for handling
 
 ## API Reference
+
+> **Note:** Due to limited official documentation, some commands may have undocumented parameters or behaviors. Methods marked with uncertain documentation are based on community research.
 
 ### Server Management
 
