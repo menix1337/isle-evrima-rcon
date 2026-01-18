@@ -168,9 +168,9 @@ When `autoReconnect` is enabled:
 | `getPlayables()` | Get list of available playable dinosaurs |
 | `updatePlayables(config)` | Update playable dinosaur configuration |
 | `wipeCorpses()` | Clear all corpses from the map |
-| `save` | Save the world state |
-| `setPaused(paused)` | Pause/unpause the server |
-| `setMigrations(enabled)` | Toggle dinosaur migrations |
+| `save()` | Save the world state |
+| `setPaused(true/false)` | Pause/unpause the server |
+| `setMigrations(true/false)` | Enable/disable dinosaur migrations |
 
 ### Player Management
 
@@ -185,15 +185,15 @@ When `autoReconnect` is enabled:
 
 | Method | Description |
 |--------|-------------|
-| `setGrowthMultiplier(enabled)` | Toggle growth multiplier feature |
+| `setGrowthMultiplier(true/false)` | Enable/disable growth multiplier feature |
 | `setGrowthMultiplierValue(multiplier)` | Set growth multiplier value (e.g., 1.5) |
-| `setNetUpdateDistanceChecks(enabled)` | Toggle network update distance checks |
+| `setNetUpdateDistanceChecks(true/false)` | Enable/disable network update distance checks |
 
 ### Whitelist
 
 | Method | Description |
 |--------|-------------|
-| `setWhitelist(enabled)` | Toggle whitelist on/off |
+| `setWhitelist(true/false)` | Enable/disable whitelist |
 | `whitelistAdd(steamId)` | Add player to whitelist |
 | `whitelistRemove(steamId)` | Remove player from whitelist |
 
@@ -201,17 +201,17 @@ When `autoReconnect` is enabled:
 
 | Method | Description |
 |--------|-------------|
-| `setGlobalChat(enabled)` | Toggle global chat |
-| `setHumans(enabled)` | Toggle human characters |
+| `setGlobalChat(true/false)` | Enable/disable global chat |
+| `setHumans(true/false)` | Enable/disable human characters |
 
 ### AI Controls
 
 | Method | Description |
 |--------|-------------|
-| `setAI(enabled)` | Toggle AI spawning |
-| `disableAIClasses(classes)` | Disable specific AI dinosaur types |
+| `setAI(true/false)` | Enable/disable AI spawning |
+| `disableAIClasses(classes)` | Disable specific AI creature types |
 | `setAIDensity(0.0-1.0)` | Set AI spawn density |
-| `setAILearning(enabled)` | Toggle AI learning (official servers only?) |
+| `setAILearning(true/false)` | Enable/disable AI learning (official servers only?) |
 | `getQueueStatus()` | Get server queue status |
 
 ### Game Constants
