@@ -232,9 +232,13 @@ export class MockRCONServer {
 			case 0x30:
 				return `Player kicked: ${params}`;
 
-			// players (0x40)
-			case 0x40:
-				return MockPlayers.map((p) => `${p.steamId},${p.name},${p.character}`).join('\n');
+			// players (0x40) - Format: PlayerList header, then SteamIds, Names, EOSIds on separate lines
+			case 0x40: {
+				const steamIds = MockPlayers.map((p) => p.steamId).join(',') + ',';
+				const names = MockPlayers.map((p) => p.name).join(',') + ',';
+				const eosIds = MockPlayers.map((_, i) => `EOS${String(i + 1).padStart(3, '0')}`).join(',') + ',';
+				return `PlayerList\n${steamIds}\n${names}\n${eosIds}`;
+			}
 
 			// save (0x50)
 			case 0x50:

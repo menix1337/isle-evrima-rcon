@@ -1,6 +1,6 @@
 {
 	"name": "isle-evrima-rcon",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "High-performance, type-safe TypeScript RCON client for The Isle: Evrima game servers with auto-reconnect and connection pooling",
 	"author": "MENIX <https://github.com/menix1337>",
 	"license": "MIT",

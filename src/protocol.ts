@@ -206,8 +206,13 @@ export interface ParsedPlayer {
 /**
  * Parse player list response into structured data.
  *
- * The server returns data in order: SteamId, Name, EOSId
- * EOS ID support was added in recent patches.
+ * Server format (grouped by type, not per-player):
+ * ```
+ * PlayerList
+ * SteamId1,SteamId2,SteamId3,
+ * Name1,Name2,Name3,
+ * EOSId1,EOSId2,EOSId3,
+ * ```
  *
  * @param response - Raw response string from players command
  * @returns Array of parsed player entries
@@ -218,29 +223,51 @@ export function parsePlayersResponse(response: string): ParsedPlayer[] {
 	// Split by newlines and filter empty lines
 	const lines = response.split('\n').filter((line) => line.trim());
 
-	for (const line of lines) {
-		// Try to extract Steam ID (17 digit number)
-		const steamIdMatch = line.match(/(\d{17})/);
-		if (steamIdMatch?.[1]) {
-			const steamId = steamIdMatch[1];
-			const afterSteamId = line.substring(line.indexOf(steamId) + 17);
+	if (lines.length === 0) {
+		return players;
+	}
 
-			// Parse remaining parts (Name, EOSId)
-			// Remove leading separators and split by comma
-			const parts = afterSteamId.replace(/^[,\s]+/, '').split(',');
+	// Skip "PlayerList" header if present
+	let dataStartIndex = 0;
+	if (lines[0]?.toLowerCase() === 'playerlist') {
+		dataStartIndex = 1;
+	}
 
-			const name = parts[0]?.trim() || 'Unknown';
-			// EOS ID is typically a 32-character hex string
-			const eosIdCandidate = parts[1]?.trim();
-			const eosId = eosIdCandidate && /^[a-f0-9]{32}$/i.test(eosIdCandidate) ? eosIdCandidate : undefined;
+	// Extract the data lines
+	const steamIdsLine = lines[dataStartIndex] ?? '';
+	const namesLine = lines[dataStartIndex + 1] ?? '';
+	const eosIdsLine = lines[dataStartIndex + 2] ?? '';
 
-			players.push({
-				steamId,
-				name,
-				...(eosId && { eosId }),
-				raw: line,
-			});
-		}
+	// Parse each line into arrays (split by comma, filter empty)
+	const steamIds = steamIdsLine
+		.split(',')
+		.map((s) => s.trim())
+		.filter(Boolean);
+	const names = namesLine
+		.split(',')
+		.map((s) => s.trim())
+		.filter(Boolean);
+	const eosIds = eosIdsLine
+		.split(',')
+		.map((s) => s.trim())
+		.filter(Boolean);
+
+	// Zip them together - use steamIds as the primary count
+	for (let i = 0; i < steamIds.length; i++) {
+		const steamId = steamIds[i];
+		if (!steamId) continue;
+
+		const name = names[i] ?? 'Unknown';
+		const eosIdCandidate = eosIds[i];
+		// EOS ID validation: typically 32-char hex, but be lenient
+		const eosId = eosIdCandidate && eosIdCandidate.length > 0 ? eosIdCandidate : undefined;
+
+		players.push({
+			steamId,
+			name,
+			...(eosId && { eosId }),
+			raw: `${steamId},${name}${eosId ? `,${eosId}` : ''}`,
+		});
 	}
 
 	return players;

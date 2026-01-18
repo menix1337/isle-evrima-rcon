@@ -90,18 +90,36 @@ describe('createCommandPacket', () => {
 });
 
 describe('parsePlayersResponse', () => {
-	test('should parse player list with Steam IDs', () => {
-		const response = `76561198012345678,PlayerOne,Carnotaurus
-76561198087654321,PlayerTwo,Utahraptor
-76561198011111111,AdminPlayer,Human`;
+	test('should parse player list with new grouped format', () => {
+		// Real server format: PlayerList header, then SteamIds, Names, EOSIds on separate lines
+		const response = `PlayerList
+76561198012345678,76561198087654321,76561198011111111,
+PlayerOne,PlayerTwo,AdminPlayer,
+EOS001,EOS002,EOS003,`;
 
 		const players = parsePlayersResponse(response);
 
 		expect(players).toHaveLength(3);
 		expect(players[0]!.steamId).toBe('76561198012345678');
 		expect(players[0]!.name).toBe('PlayerOne');
+		expect(players[0]!.eosId).toBe('EOS001');
 		expect(players[1]!.steamId).toBe('76561198087654321');
+		expect(players[1]!.name).toBe('PlayerTwo');
 		expect(players[2]!.steamId).toBe('76561198011111111');
+		expect(players[2]!.name).toBe('AdminPlayer');
+	});
+
+	test('should handle format without PlayerList header', () => {
+		const response = `76561198012345678,76561198087654321,
+TheDiamondRex,Heichukar,`;
+
+		const players = parsePlayersResponse(response);
+
+		expect(players).toHaveLength(2);
+		expect(players[0]!.steamId).toBe('76561198012345678');
+		expect(players[0]!.name).toBe('TheDiamondRex');
+		expect(players[1]!.steamId).toBe('76561198087654321');
+		expect(players[1]!.name).toBe('Heichukar');
 	});
 
 	test('should handle empty response', () => {
@@ -109,17 +127,33 @@ describe('parsePlayersResponse', () => {
 		expect(players).toHaveLength(0);
 	});
 
-	test('should handle response without valid Steam IDs', () => {
-		const response = 'No players online';
+	test('should handle PlayerList with no players', () => {
+		const response = 'PlayerList';
 		const players = parsePlayersResponse(response);
 		expect(players).toHaveLength(0);
 	});
 
-	test('should preserve raw line data', () => {
-		const response = '76561198012345678,TestPlayer,Carnotaurus,ExtraData';
+	test('should handle missing EOS IDs gracefully', () => {
+		const response = `PlayerList
+76561198012345678,76561198087654321,
+PlayerOne,PlayerTwo,`;
+
 		const players = parsePlayersResponse(response);
 
-		expect(players[0]!.raw).toBe(response);
+		expect(players).toHaveLength(2);
+		expect(players[0]!.eosId).toBeUndefined();
+		expect(players[1]!.eosId).toBeUndefined();
+	});
+
+	test('should construct raw field from parsed data', () => {
+		const response = `PlayerList
+76561198012345678,
+TestPlayer,
+EOS123,`;
+
+		const players = parsePlayersResponse(response);
+
+		expect(players[0]!.raw).toBe('76561198012345678,TestPlayer,EOS123');
 	});
 });
 
