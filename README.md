@@ -209,10 +209,35 @@ When `autoReconnect` is enabled:
 | Method | Description |
 |--------|-------------|
 | `setAI(enabled)` | Toggle AI spawning |
-| `disableAIClasses(classes)` | Disable specific AI types |
+| `disableAIClasses(classes)` | Disable specific AI dinosaur types |
 | `setAIDensity(0.0-1.0)` | Set AI spawn density |
 | `setAILearning(enabled)` | Toggle AI learning behavior |
 | `getQueueStatus()` | Get server queue status |
+
+### Game Constants
+
+The library includes typed constants for dinosaurs and AI creatures:
+
+```typescript
+import { 
+  PLAYABLE_DINOSAURS,    // Playable dino classes
+  AI_CREATURE_CLASSES,   // Ambient AI wildlife
+  type PlayableDinosaur,
+  type AICreatureClass 
+} from 'isle-evrima-rcon';
+
+// Disable ambient AI creatures (wildlife NPCs)
+await client.disableAIClasses(['Compsognathus', 'Deer', 'Boar']);
+
+// AI_CREATURE_CLASSES includes:
+// Compsognathus, Pterodactylus, Boar, Deer, Goat, Seaturtle, Rabbit, Crab
+
+// PLAYABLE_DINOSAURS includes all 20 playable dinos:
+// Dryosaurus, Hypsilophodon, Pachycephalosaurus, Stegosaurus, Tenontosaurus,
+// Diabloceratops, Maiasaura, Triceratops, Carnotaurus, Ceratosaurus,
+// Deinosuchus, Omniraptor, Pteranodon, Troodon, Beipiaosaurus, Gallimimus,
+// Dilophosaurus, Herrerasaurus, Allosaurus, Tyrannosaurus
+```
 
 ### Low-Level Commands
 

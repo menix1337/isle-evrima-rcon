@@ -47,9 +47,11 @@ export type {
 	ServerDetails,
 	CommandDefinition,
 	RCONErrorCode,
+	PlayableDinosaur,
+	AICreatureClass,
 } from './types.js';
 
-export { RCONError } from './types.js';
+export { RCONError, PLAYABLE_DINOSAURS, AI_CREATURE_CLASSES } from './types.js';
 
 // Command registry exports
 export {

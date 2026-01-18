@@ -257,3 +257,65 @@ export class RCONError extends Error {
 		Object.setPrototypeOf(this, RCONError.prototype);
 	}
 }
+
+// ============================================================================
+// Game Constants
+// ============================================================================
+
+/**
+ * All playable dinosaur/creature classes in The Isle: Evrima.
+ *
+ * Used for commands like `updateplayables` and `getplayables`.
+ * List is current as of January 2026 and may expand with game updates.
+ */
+export const PLAYABLE_DINOSAURS = [
+	// Herbivores
+	'Dryosaurus',
+	'Hypsilophodon',
+	'Pachycephalosaurus',
+	'Stegosaurus',
+	'Tenontosaurus',
+	'Diabloceratops',
+	'Maiasaura',
+	'Triceratops',
+	// Carnivores
+	'Carnotaurus',
+	'Ceratosaurus',
+	'Deinosuchus',
+	'Omniraptor',
+	'Pteranodon',
+	'Troodon',
+	'Beipiaosaurus',
+	'Gallimimus',
+	'Dilophosaurus',
+	'Herrerasaurus',
+	'Allosaurus',
+	'Tyrannosaurus',
+] as const;
+
+/**
+ * Type representing valid playable dinosaur names.
+ */
+export type PlayableDinosaur = (typeof PLAYABLE_DINOSAURS)[number];
+
+/**
+ * Ambient AI creature classes that can be toggled/disabled.
+ *
+ * These are the NPC wildlife that spawn in the world, NOT playable dinosaurs.
+ * Used for the `disableAIClasses` command.
+ */
+export const AI_CREATURE_CLASSES = [
+	'Compsognathus',
+	'Pterodactylus',
+	'Boar',
+	'Deer',
+	'Goat',
+	'Seaturtle',
+	'Rabbit',
+	'Crab',
+] as const;
+
+/**
+ * Type representing valid AI creature class names.
+ */
+export type AICreatureClass = (typeof AI_CREATURE_CLASSES)[number];

@@ -12,6 +12,7 @@ import {
 	type PlayerInfo,
 	type PlayerData,
 	type ServerDetails,
+	type AICreatureClass,
 	RCONError,
 	RCONErrorCode,
 } from './types.js';
@@ -464,10 +465,22 @@ export class EvrimaRCON {
 	}
 
 	/**
-	 * Disable specific AI classes.
-	 * @param classes - Array of AI class names to disable
+	 * Disable specific ambient AI creature classes.
+	 *
+	 * These are NPC wildlife (not playable dinosaurs) like Compsognathus, Deer, Boar, etc.
+	 *
+	 * @param classes - Array of AI creature class names to disable
+	 *
+	 * @example
+	 * ```typescript
+	 * // Type-safe with autocomplete
+	 * await client.disableAIClasses(['Compsognathus', 'Deer', 'Boar']);
+	 *
+	 * // Or use the AI_CREATURE_CLASSES constant
+	 * import { AI_CREATURE_CLASSES } from 'isle-evrima-rcon';
+	 * ```
 	 */
-	async disableAIClasses(classes: string[]): Promise<CommandResult> {
+	async disableAIClasses(classes: (AICreatureClass | string)[]): Promise<CommandResult> {
 		return this.sendCommand('ai:classes:disable', classes.join(','));
 	}
 
