@@ -281,7 +281,7 @@ export class EvrimaRCON {
 	 * Toggle dinosaur migrations on/off.
 	 * @param enabled - True to enable, false to disable
 	 */
-	async setMigrations(enabled: boolean): Promise<CommandResult> {
+	async toggleMigrations(enabled: boolean): Promise<CommandResult> {
 		return this.sendCommand('migrations:toggle', enabled ? '1' : '0');
 	}
 
@@ -371,7 +371,7 @@ export class EvrimaRCON {
 	 * Toggle growth multiplier feature on/off.
 	 * @param enabled - True to enable, false to disable
 	 */
-	async setGrowthMultiplier(enabled: boolean): Promise<CommandResult> {
+	async toggleGrowthMultiplier(enabled: boolean): Promise<CommandResult> {
 		return this.sendCommand('growth:multiplier:toggle', enabled ? '1' : '0');
 	}
 
@@ -390,10 +390,10 @@ export class EvrimaRCON {
 	}
 
 	/**
-	 * Toggle network update distance checks.
+	 * Toggle network update distance checks on/off.
 	 * @param enabled - True to enable, false to disable
 	 */
-	async setNetUpdateDistanceChecks(enabled: boolean): Promise<CommandResult> {
+	async toggleNetUpdateDistanceChecks(enabled: boolean): Promise<CommandResult> {
 		return this.sendCommand('netupdate:toggle', enabled ? '1' : '0');
 	}
 
@@ -402,10 +402,10 @@ export class EvrimaRCON {
 	// ========================================================================
 
 	/**
-	 * Enable or disable the server whitelist.
+	 * Toggle the server whitelist on/off.
 	 * @param enabled - True to enable, false to disable
 	 */
-	async setWhitelist(enabled: boolean): Promise<CommandResult> {
+	async toggleWhitelist(enabled: boolean): Promise<CommandResult> {
 		return this.sendCommand('whitelist:toggle', enabled ? '1' : '0');
 	}
 
@@ -436,18 +436,18 @@ export class EvrimaRCON {
 	// ========================================================================
 
 	/**
-	 * Enable or disable global chat.
+	 * Toggle global chat on/off.
 	 * @param enabled - True to enable, false to disable
 	 */
-	async setGlobalChat(enabled: boolean): Promise<CommandResult> {
+	async toggleGlobalChat(enabled: boolean): Promise<CommandResult> {
 		return this.sendCommand('globalchat:toggle', enabled ? '1' : '0');
 	}
 
 	/**
-	 * Enable or disable human characters.
+	 * Toggle human characters on/off.
 	 * @param enabled - True to enable, false to disable
 	 */
-	async setHumans(enabled: boolean): Promise<CommandResult> {
+	async toggleHumans(enabled: boolean): Promise<CommandResult> {
 		return this.sendCommand('humans:toggle', enabled ? '1' : '0');
 	}
 
@@ -456,10 +456,10 @@ export class EvrimaRCON {
 	// ========================================================================
 
 	/**
-	 * Enable or disable AI on the server.
+	 * Toggle AI spawning on/off.
 	 * @param enabled - True to enable, false to disable
 	 */
-	async setAI(enabled: boolean): Promise<CommandResult> {
+	async toggleAI(enabled: boolean): Promise<CommandResult> {
 		return this.sendCommand('ai:toggle', enabled ? '1' : '0');
 	}
 
@@ -511,7 +511,7 @@ export class EvrimaRCON {
 	 *
 	 * @param enabled - True to enable, false to disable
 	 */
-	async setAILearning(enabled: boolean): Promise<CommandResult> {
+	async toggleAILearning(enabled: boolean): Promise<CommandResult> {
 		return this.sendCommand('ai:learning:toggle', enabled ? '1' : '0');
 	}
 

@@ -170,7 +170,7 @@ When `autoReconnect` is enabled:
 | `wipeCorpses()` | Clear all corpses from the map |
 | `save()` | Save the world state |
 | `setPaused(true/false)` | Pause/unpause the server |
-| `setMigrations(true/false)` | Enable/disable dinosaur migrations |
+| `toggleMigrations(true/false)` | Toggle dinosaur migrations |
 
 ### Player Management
 
@@ -185,15 +185,15 @@ When `autoReconnect` is enabled:
 
 | Method | Description |
 |--------|-------------|
-| `setGrowthMultiplier(true/false)` | Enable/disable growth multiplier feature |
+| `toggleGrowthMultiplier(true/false)` | Toggle growth multiplier feature |
 | `setGrowthMultiplierValue(multiplier)` | Set growth multiplier value (e.g., 1.5) |
-| `setNetUpdateDistanceChecks(true/false)` | Enable/disable network update distance checks |
+| `toggleNetUpdateDistanceChecks(true/false)` | Toggle network update distance checks |
 
 ### Whitelist
 
 | Method | Description |
 |--------|-------------|
-| `setWhitelist(true/false)` | Enable/disable whitelist |
+| `toggleWhitelist(true/false)` | Toggle whitelist on/off |
 | `whitelistAdd(steamId)` | Add player to whitelist |
 | `whitelistRemove(steamId)` | Remove player from whitelist |
 
@@ -201,17 +201,17 @@ When `autoReconnect` is enabled:
 
 | Method | Description |
 |--------|-------------|
-| `setGlobalChat(true/false)` | Enable/disable global chat |
-| `setHumans(true/false)` | Enable/disable human characters |
+| `toggleGlobalChat(true/false)` | Toggle global chat |
+| `toggleHumans(true/false)` | Toggle human characters |
 
 ### AI Controls
 
 | Method | Description |
 |--------|-------------|
-| `setAI(true/false)` | Enable/disable AI spawning |
+| `toggleAI(true/false)` | Toggle AI spawning |
 | `disableAIClasses(classes)` | Disable specific AI creature types |
 | `setAIDensity(0.0-1.0)` | Set AI spawn density |
-| `setAILearning(true/false)` | Enable/disable AI learning (official servers only?) |
+| `toggleAILearning(true/false)` | Toggle AI learning (official servers only?) |
 | `getQueueStatus()` | Get server queue status |
 
 ### Game Constants
